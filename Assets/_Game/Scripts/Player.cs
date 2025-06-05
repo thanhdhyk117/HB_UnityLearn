@@ -15,20 +15,38 @@ public class Player : MonoBehaviour
     private bool isAttack;
 
     private float horizontalInput;
+    private bool jumpRequest = false; // Biến tạm để lưu yêu cầu nhảy
+    private bool attackRequest = false; // Biến tạm để lưu yêu cầu tấn công
+    private bool throwRequest = false; // Biến tạm để lưu yêu cầu ném
 
     [SerializeField] private string currentAnimName;
 
-    // Start is called before the first frame update
-    void Start()
+    void Update()
     {
+        // Thu nhận input trong Update
+        horizontalInput = Input.GetAxisRaw("Horizontal");
 
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        {
+            jumpRequest = true;
+        }
+
+        if (Input.GetKeyDown(KeyCode.C) && isGrounded)
+        {
+            attackRequest = true;
+        }
+
+        if (Input.GetKeyDown(KeyCode.V) && isGrounded)
+        {
+            throwRequest = true;
+        }
     }
 
-    // Update is called once per frame
     void FixedUpdate()
     {
         isGrounded = IsCheckGrounded();
-        horizontalInput = Input.GetAxisRaw("Horizontal"); // -1 ==> 1
+
+        // Nếu đang trong trạng thái attack, không xử lý hành động mới
         if (isAttack)
         {
             return;
@@ -40,38 +58,46 @@ public class Player : MonoBehaviour
             {
                 return;
             }
-            //Jump
-            if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+
+            // Xử lý nhảy
+            if (jumpRequest)
             {
                 Jump();
+                jumpRequest = false;
+            }
+
+            // Xử lý tấn công
+            if (attackRequest)
+            {
+                Attack();
+                attackRequest = false;
+            }
+
+            // Xử lý ném
+            if (throwRequest)
+            {
+                Throw();
+                throwRequest = false;
             }
 
             if (Mathf.Abs(horizontalInput) > 0.1f)
             {
                 ChangeAnim("run");
             }
-
-            //Attack
-            if (Input.GetKeyDown(KeyCode.C) && isGrounded)
-                Attack();
-            //throw
-            if (Input.GetKeyDown(KeyCode.V) && isGrounded)
-                Throw();
         }
 
-        //Check falling
+        // Kiểm tra rơi
         if (!isGrounded && rb.velocity.y < 0)
         {
             ChangeAnim("fall");
             isJumping = false;
         }
 
-        //Moving
+        // Di chuyển
         if (Mathf.Abs(horizontalInput) > 0.1f)
         {
             ChangeAnim("run");
             rb.velocity = new Vector2(horizontalInput * Time.fixedDeltaTime * speed, rb.velocity.y);
-            // transform.localScale = new Vector3(Mathf.Sign(horizontalInput), 1, 1); 
             transform.rotation = Quaternion.Euler(0, horizontalInput < 0 ? 180 : 0, 0);
         }
         else if (isGrounded)
@@ -84,9 +110,7 @@ public class Player : MonoBehaviour
     private bool IsCheckGrounded()
     {
         Debug.DrawLine(transform.position, transform.position + Vector3.down * 1.2f, Color.red);
-        // Check if the player is grounded
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1.2f, groundLayer);
-
         return hit.collider != null;
     }
 
@@ -94,7 +118,7 @@ public class Player : MonoBehaviour
     {
         ChangeAnim("attack");
         isAttack = true;
-        Invoke(nameof(ResetAttack), 0.45f);
+        Invoke(nameof(ResetAttack), 0.5f);
     }
 
     private void Jump()
@@ -117,7 +141,7 @@ public class Player : MonoBehaviour
     {
         ChangeAnim("throw");
         isAttack = true;
-        Invoke(nameof(ResetAttack), 0.45f);
+        Invoke(nameof(ResetAttack), 0.5f);
     }
 
     private void ChangeAnim(string animName)
