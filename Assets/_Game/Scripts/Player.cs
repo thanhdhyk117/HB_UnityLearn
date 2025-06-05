@@ -131,10 +131,13 @@ public class Player : MonoBehaviour
     private void ResetAttack()
     {
         Debug.Log("Reset Attack");
+        // isAttack = false;
+        // animator.ResetTrigger(currentAnimName);
+        // currentAnimName = "idle";
+        // animator.SetTrigger("idle");
+
+        ChangeAnim("idle");
         isAttack = false;
-        animator.ResetTrigger(currentAnimName);
-        currentAnimName = "idle";
-        animator.SetTrigger("idle");
     }
 
     private void Throw()
