@@ -15,9 +15,6 @@ public class Player : MonoBehaviour
     private bool isAttack;
 
     private float horizontalInput;
-    private bool jumpRequest = false; // Biến tạm để lưu yêu cầu nhảy
-    private bool attackRequest = false; // Biến tạm để lưu yêu cầu tấn công
-    private bool throwRequest = false; // Biến tạm để lưu yêu cầu ném
 
     [SerializeField] private string currentAnimName;
 
@@ -28,17 +25,17 @@ public class Player : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
-            jumpRequest = true;
+            Jump();
         }
 
         if (Input.GetKeyDown(KeyCode.C) && isGrounded)
         {
-            attackRequest = true;
+            Attack();
         }
 
         if (Input.GetKeyDown(KeyCode.V) && isGrounded)
         {
-            throwRequest = true;
+            Throw();
         }
     }
 
@@ -60,25 +57,6 @@ public class Player : MonoBehaviour
             }
 
             // Xử lý nhảy
-            if (jumpRequest)
-            {
-                Jump();
-                jumpRequest = false;
-            }
-
-            // Xử lý tấn công
-            if (attackRequest)
-            {
-                Attack();
-                attackRequest = false;
-            }
-
-            // Xử lý ném
-            if (throwRequest)
-            {
-                Throw();
-                throwRequest = false;
-            }
 
             if (Mathf.Abs(horizontalInput) > 0.1f)
             {
@@ -118,7 +96,7 @@ public class Player : MonoBehaviour
     {
         ChangeAnim("attack");
         isAttack = true;
-        Invoke(nameof(ResetAttack), 0.5f);
+        Invoke(nameof(ResetAttack), 0.75f);
     }
 
     private void Jump()
@@ -131,11 +109,6 @@ public class Player : MonoBehaviour
     private void ResetAttack()
     {
         Debug.Log("Reset Attack");
-        // isAttack = false;
-        // animator.ResetTrigger(currentAnimName);
-        // currentAnimName = "idle";
-        // animator.SetTrigger("idle");
-
         ChangeAnim("idle");
         isAttack = false;
     }
@@ -144,7 +117,7 @@ public class Player : MonoBehaviour
     {
         ChangeAnim("throw");
         isAttack = true;
-        Invoke(nameof(ResetAttack), 0.5f);
+        Invoke(nameof(ResetAttack), 0.75f);
     }
 
     private void ChangeAnim(string animName)
