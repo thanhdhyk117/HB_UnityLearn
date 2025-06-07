@@ -18,6 +18,8 @@ public class Player : MonoBehaviour
 
     [SerializeField] private string currentAnimName;
 
+    private int countCoin = 0;
+
     void Update()
     {
         // Thu nhận input trong Update
@@ -127,6 +129,16 @@ public class Player : MonoBehaviour
             animator.ResetTrigger(animName);
             currentAnimName = animName;
             animator.SetTrigger(currentAnimName);
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("coin"))
+        {
+            countCoin++;
+            Destroy(collision.gameObject); 
+            Debug.Log($"Coin {collision.gameObject.name} collected!");
         }
     }
 }
