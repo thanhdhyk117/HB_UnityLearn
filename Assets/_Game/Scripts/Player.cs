@@ -13,12 +13,21 @@ public class Player : MonoBehaviour
     private bool isGrounded = true;
     private bool isJumping = false;
     private bool isAttack;
+    private bool isDeath = false;
 
     private float horizontalInput;
 
     [SerializeField] private string currentAnimName;
 
     private int countCoin = 0;
+
+    private Vector3 savePoint;
+
+    private void Start()
+    {
+        SetSavePoint();
+        OnInit();
+    }
 
     void Update()
     {
@@ -43,6 +52,11 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (isDeath)
+        {
+            return; // Nếu đã chết, không xử lý gì thêm
+        }
+
         isGrounded = IsCheckGrounded();
 
         // Nếu đang trong trạng thái attack, không xử lý hành động mới
@@ -87,6 +101,15 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void OnInit()
+    {
+        isDeath = false;
+        isAttack = false;
+
+        transform.position = savePoint;
+
+        ChangeAnim("idle");
+    }
     private bool IsCheckGrounded()
     {
         Debug.DrawLine(transform.position, transform.position + Vector3.down * 1.2f, Color.red);
@@ -137,8 +160,23 @@ public class Player : MonoBehaviour
         if (collision.CompareTag("coin"))
         {
             countCoin++;
-            Destroy(collision.gameObject); 
+            Destroy(collision.gameObject);
             Debug.Log($"Coin {collision.gameObject.name} collected!");
         }
+
+        if (collision.CompareTag("DeathZone"))
+        {
+            Debug.Log("Player has died!");
+            // Thêm logic xử lý khi player chết, ví dụ: reset vị trí, giảm mạng, v.v.
+            ChangeAnim("die");
+            isDeath = true;
+
+            Invoke(nameof(OnInit), 1f); // Reset player sau 2 giây
+        }
+    }
+
+    public void SetSavePoint()
+    {
+        savePoint = transform.position;
     }
 }
