@@ -2,10 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : Character
 {
     [SerializeField] private Rigidbody2D rb;
-    [SerializeField] private Animator animator;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private float speed = 5f;
     [SerializeField] private float jumpForce = 255f;
@@ -17,7 +16,6 @@ public class Player : MonoBehaviour
 
     private float horizontalInput;
 
-    [SerializeField] private string currentAnimName;
 
     private int countCoin = 0;
 
@@ -26,7 +24,7 @@ public class Player : MonoBehaviour
     private void Start()
     {
         SetSavePoint();
-        OnInit();
+        base.OnInit();
     }
 
     void Update()
@@ -101,7 +99,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void OnInit()
+    public override void OnInit()
     {
         isDeath = false;
         isAttack = false;
@@ -145,15 +143,15 @@ public class Player : MonoBehaviour
         Invoke(nameof(ResetAttack), 0.75f);
     }
 
-    private void ChangeAnim(string animName)
-    {
-        if (currentAnimName != animName)
-        {
-            animator.ResetTrigger(animName);
-            currentAnimName = animName;
-            animator.SetTrigger(currentAnimName);
-        }
-    }
+    // private void ChangeAnim(string animName)
+    // {
+    //     if (currentAnimName != animName)
+    //     {
+    //         animator.ResetTrigger(animName);
+    //         currentAnimName = animName;
+    //         animator.SetTrigger(currentAnimName);
+    //     }
+    // }
 
     void OnTriggerEnter2D(Collider2D collision)
     {
