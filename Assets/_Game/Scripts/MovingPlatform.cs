@@ -10,7 +10,6 @@ public class MovingPlatform : MonoBehaviour
     [SerializeField] private Vector3 targetPosition;
     [SerializeField] private float speed = 2f;
 
-    [SerializeField] bool isEnd = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -66,10 +65,9 @@ public class MovingPlatform : MonoBehaviour
         }
     }
 
-
     IEnumerator MovePointToPoint()
     {
-        while (isEnd)
+        while (true)
         {
             transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
 
