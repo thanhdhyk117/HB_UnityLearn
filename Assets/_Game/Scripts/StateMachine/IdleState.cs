@@ -25,6 +25,6 @@ public class IdleState : IState
 
     public void OnExit(Enemy enemy)
     {
-        throw new System.NotImplementedException();
+        
     }
 }
