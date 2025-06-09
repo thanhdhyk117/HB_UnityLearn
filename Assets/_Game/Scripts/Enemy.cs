@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +9,10 @@ public class Enemy : Character
     [SerializeField] private float attackRange = 1.5f;
     [SerializeField] private float attackDamage = 10f;
     [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private GameObject attackArea;
+    private bool isRight = true;
+    private Character target;
+    public Character Target => target;
     // Start is called before the first frame 
     private IState currentState;
 
@@ -19,25 +24,25 @@ public class Enemy : Character
         }
     }
 
-
     public override void OnInit()
     {
         base.OnInit();
         ChangeState(new IdleState());
+        DeActiveAttack();
     }
 
     public override void OnDespawn()
     {
         base.OnDespawn();
+        Destroy(gameObject);
     }
 
     protected override void OnDeath()
     {
+        ChangeState(null);
         base.OnDeath();
         Debug.Log("Enemy has died.");
     }
-
-
 
     public void ChangeState(IState newState)
     {
@@ -55,12 +60,28 @@ public class Enemy : Character
             currentState.OnEnter(this);
         }
     }
+    internal void SetTarget(Character character)
+    {
+        this.target = character;
 
+        if (IsTargetInRange())
+        {
+            ChangeState(new AttackState());
+        }
+        else if (Target != null)
+        {
+            ChangeState(new PatrolState());
+        }
+        else
+        {
+            ChangeState(new IdleState());
+        }
+    }
     public void Moving()
     {
         ChangeAnim("run");
 
-        rb.velocity = new Vector2(speed, rb.velocity.y);
+        rb.velocity = transform.right * speed;
     }
 
     public void StopMoving()
@@ -71,11 +92,44 @@ public class Enemy : Character
 
     public void Attack()
     {
+        ChangeAnim("attack");
+        ActiveAttack();
 
+        Invoke(nameof(DeActiveAttack), 0.66f);
     }
 
     public bool IsTargetInRange()
     {
-        return false;
+        if (Target != null)
+        {
+            return Vector2.Distance(target.transform.position, transform.position) < attackRange;
+        }
+        else
+            return false;
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("EnemyWall"))
+        {
+            ChangDirection(!isRight);
+        }
+    }
+
+    public void ChangDirection(bool isRight)
+    {
+        this.isRight = isRight;
+
+        transform.rotation = isRight ? Quaternion.Euler(Vector3.zero) : Quaternion.Euler(Vector3.up * 180);
+    }
+
+    private void ActiveAttack()
+    {
+        attackArea.SetActive(true);
+    }
+
+    private void DeActiveAttack()
+    {
+        attackArea.SetActive(false);
     }
 }

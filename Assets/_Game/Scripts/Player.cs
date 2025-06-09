@@ -9,6 +9,10 @@ public class Player : Character
     [SerializeField] private float speed = 5f;
     [SerializeField] private float jumpForce = 255f;
 
+    [SerializeField] private Kunai kunaiPrefab;
+    [SerializeField] private Transform throwPoint;
+    [SerializeField] private GameObject attackArea;
+
     private bool isGrounded = true;
     private bool isJumping = false;
     private bool isAttack;
@@ -20,12 +24,6 @@ public class Player : Character
     private int countCoin = 0;
 
     private Vector3 savePoint;
-
-    private void Start()
-    {
-        SetSavePoint();
-        base.OnInit();
-    }
 
     void Update()
     {
@@ -101,12 +99,29 @@ public class Player : Character
 
     public override void OnInit()
     {
+        base.OnInit();
         isDeath = false;
         isAttack = false;
-
         transform.position = savePoint;
-
         ChangeAnim("idle");
+        DeActiveAttack();
+    }
+    public override void OnDespawn()
+    {
+        base.OnDespawn();
+        OnInit();
+    }
+
+    public void SetSavePoint()
+    {
+        savePoint = transform.position;
+    }
+
+    protected override void OnDeath()
+    {
+        //base.OnDeath();
+
+        OnInit();
     }
     private bool IsCheckGrounded()
     {
@@ -120,6 +135,8 @@ public class Player : Character
         ChangeAnim("attack");
         isAttack = true;
         Invoke(nameof(ResetAttack), 0.75f);
+        ActiveAttack();
+        Invoke(nameof(DeActiveAttack), 0.66f);
     }
 
     private void Jump()
@@ -141,6 +158,8 @@ public class Player : Character
         ChangeAnim("throw");
         isAttack = true;
         Invoke(nameof(ResetAttack), 0.75f);
+
+        Instantiate(kunaiPrefab, throwPoint.position, throwPoint.rotation);
     }
 
     // private void ChangeAnim(string animName)
@@ -153,13 +172,23 @@ public class Player : Character
     //     }
     // }
 
+
+
+    private void ActiveAttack()
+    {
+        attackArea.SetActive(true);
+    }
+
+    private void DeActiveAttack()
+    {
+        attackArea.SetActive(false);
+    }
     void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("coin"))
         {
             countCoin++;
             Destroy(collision.gameObject);
-            Debug.Log($"Coin {collision.gameObject.name} collected!");
         }
 
         if (collision.CompareTag("DeathZone"))
@@ -171,10 +200,5 @@ public class Player : Character
 
             Invoke(nameof(OnInit), 1f); // Reset player sau 2 giây
         }
-    }
-
-    public void SetSavePoint()
-    {
-        savePoint = transform.position;
     }
 }
