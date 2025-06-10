@@ -13,22 +13,27 @@ public class Player : Character
     [SerializeField] private Transform throwPoint;
     [SerializeField] private GameObject attackArea;
 
+
     private bool isGrounded = true;
     private bool isJumping = false;
     private bool isAttack;
-    private bool isDeath = false;
 
     private float horizontalInput;
 
 
-    private int countCoin = 0;
+    private int coin = 0;
 
     private Vector3 savePoint;
+
+    private void Awake()
+    {
+        coin = PlayerPrefs.GetInt("coin", 0);
+    }
 
     void Update()
     {
         // Thu nhận input trong Update
-        horizontalInput = Input.GetAxisRaw("Horizontal");
+        //horizontalInput = Input.GetAxisRaw("Horizontal");
 
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
@@ -48,7 +53,7 @@ public class Player : Character
 
     void FixedUpdate()
     {
-        if (isDeath)
+        if (IsDead)
         {
             return; // Nếu đã chết, không xử lý gì thêm
         }
@@ -87,7 +92,7 @@ public class Player : Character
         if (Mathf.Abs(horizontalInput) > 0.1f)
         {
             ChangeAnim("run");
-            rb.velocity = new Vector2(horizontalInput * Time.fixedDeltaTime * speed, rb.velocity.y);
+            rb.velocity = new Vector2(horizontalInput * speed, rb.velocity.y);
             transform.rotation = Quaternion.Euler(0, horizontalInput < 0 ? 180 : 0, 0);
         }
         else if (isGrounded)
@@ -100,11 +105,12 @@ public class Player : Character
     public override void OnInit()
     {
         base.OnInit();
-        isDeath = false;
         isAttack = false;
         transform.position = savePoint;
         ChangeAnim("idle");
         DeActiveAttack();
+
+        UIManager.instance.SetCoinText(coin);
     }
     public override void OnDespawn()
     {
@@ -130,7 +136,7 @@ public class Player : Character
         return hit.collider != null;
     }
 
-    private void Attack()
+    public void Attack()
     {
         ChangeAnim("attack");
         isAttack = true;
@@ -139,7 +145,7 @@ public class Player : Character
         Invoke(nameof(DeActiveAttack), 0.66f);
     }
 
-    private void Jump()
+    public void Jump()
     {
         isJumping = true;
         ChangeAnim("jump");
@@ -153,7 +159,7 @@ public class Player : Character
         isAttack = false;
     }
 
-    private void Throw()
+    public void Throw()
     {
         ChangeAnim("throw");
         isAttack = true;
@@ -161,18 +167,6 @@ public class Player : Character
 
         Instantiate(kunaiPrefab, throwPoint.position, throwPoint.rotation);
     }
-
-    // private void ChangeAnim(string animName)
-    // {
-    //     if (currentAnimName != animName)
-    //     {
-    //         animator.ResetTrigger(animName);
-    //         currentAnimName = animName;
-    //         animator.SetTrigger(currentAnimName);
-    //     }
-    // }
-
-
 
     private void ActiveAttack()
     {
@@ -183,11 +177,18 @@ public class Player : Character
     {
         attackArea.SetActive(false);
     }
+
+    public void SetMove(float horizontal)
+    {
+        this.horizontalInput = horizontal;
+    }
     void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("coin"))
         {
-            countCoin++;
+            coin++;
+            PlayerPrefs.SetInt("coin", coin);
+            UIManager.instance.SetCoinText(coin);
             Destroy(collision.gameObject);
         }
 
@@ -196,7 +197,6 @@ public class Player : Character
             Debug.Log("Player has died!");
             // Thêm logic xử lý khi player chết, ví dụ: reset vị trí, giảm mạng, v.v.
             ChangeAnim("die");
-            isDeath = true;
 
             Invoke(nameof(OnInit), 1f); // Reset player sau 2 giây
         }

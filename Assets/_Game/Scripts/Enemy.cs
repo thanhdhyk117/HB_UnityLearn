@@ -18,7 +18,7 @@ public class Enemy : Character
 
     void Update()
     {
-        if (currentState != null)
+        if (currentState != null && !IsDead)
         {
             currentState.OnExecute(this);
         }
@@ -41,6 +41,7 @@ public class Enemy : Character
     {
         ChangeState(null);
         base.OnDeath();
+        Destroy(healthBar.gameObject);
         Debug.Log("Enemy has died.");
     }
 

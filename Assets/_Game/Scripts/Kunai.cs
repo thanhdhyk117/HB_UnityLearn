@@ -5,7 +5,7 @@ using UnityEngine;
 public class Kunai : MonoBehaviour
 {
     public Rigidbody2D rb;
-
+    [SerializeField] private GameObject vfxHit;
 
     void Start()
     {
@@ -28,7 +28,7 @@ public class Kunai : MonoBehaviour
         if (collision.CompareTag("Enemy"))
         {
             collision.GetComponent<Character>().OnHit(30);
-
+            Instantiate(vfxHit, transform.position, transform.rotation);
             OnDespawn();
         }
     }
