@@ -14266,7 +14266,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: ebeef20fe300d2248bc0d6e4cc845a06, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -14286,7 +14286,7 @@ TilemapCollider2D:
   m_GameObject: {fileID: 1386794497}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: ebeef20fe300d2248bc0d6e4cc845a06, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -17753,7 +17753,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: ebeef20fe300d2248bc0d6e4cc845a06, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -17890,7 +17890,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   speed: 7
-  jumpForce: 360
+  jumpForce: 300
   kunaiPrefab: {fileID: 16515099609549152, guid: 6ee502d54a14b334c9dd3c5b7f83d9fe, type: 3}
   throwPoint: {fileID: 1887252537}
   attackArea: {fileID: 1132224858}
@@ -19726,7 +19726,7 @@ CompositeCollider2D:
   m_GameObject: {fileID: 2140750815}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: ebeef20fe300d2248bc0d6e4cc845a06, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -19776,7 +19776,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: ebeef20fe300d2248bc0d6e4cc845a06, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -19796,7 +19796,7 @@ TilemapCollider2D:
   m_GameObject: {fileID: 2140750815}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: ebeef20fe300d2248bc0d6e4cc845a06, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
