@@ -18,6 +18,8 @@ public class Player : Character
     private bool isJumping = false;
     private bool isAttack;
 
+    [SerializeField] private bool isControlKey = false;
+
     private float horizontalInput;
 
 
@@ -32,22 +34,27 @@ public class Player : Character
 
     void Update()
     {
-        // Thu nhận input trong Update
-        //horizontalInput = Input.GetAxisRaw("Horizontal");
 
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if (isControlKey)
         {
-            Jump();
-        }
 
-        if (Input.GetKeyDown(KeyCode.C) && isGrounded)
-        {
-            Attack();
-        }
+            // Thu nhận input trong Update
+            horizontalInput = Input.GetAxisRaw("Horizontal");
 
-        if (Input.GetKeyDown(KeyCode.V) && isGrounded)
-        {
-            Throw();
+            if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+            {
+                Jump();
+            }
+
+            if (Input.GetKeyDown(KeyCode.C) && isGrounded)
+            {
+                Attack();
+            }
+
+            if (Input.GetKeyDown(KeyCode.V) && isGrounded)
+            {
+                Throw();
+            }
         }
     }
 
